@@ -40,11 +40,19 @@ export function transformJsxDirective(options: TransformOptions) {
 
   const ctxNodeSet = new Set<JsxDirective['node']>()
 
+
+  const allJsxNodeSet = new Set<JsxDirective['node']>()
+
   function walkJsxDirective(
     node: import('typescript').Node,
     parent?: import('typescript').Node,
   ) {
     const tagName = getTagName(node, options)
+	if((tagName != null && tagName !== "") && (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node))) {
+		const allJsxNodeSet = new Set<JsxDirective['node']>()
+		.add(node)
+	}
+
     const properties = getOpeningElement(node, options)
     let vIfAttribute
     let vForAttribute
@@ -184,6 +192,20 @@ export function getOpeningElement(
     : ts.isJsxElement(node)
       ? node.openingElement
       : undefined
+}
+
+
+export function getSelfClosingElement(
+	node: JsxDirective['node'],
+	options: TransformOptions,
+  ) {
+	const { ts } = options
+  
+	return ts.isJsxSelfClosingElement(node)
+	  ? node
+	  : ts.isJsxElement(node)
+		? node.closingElement
+		: undefined
 }
 
 export function getTagName(
