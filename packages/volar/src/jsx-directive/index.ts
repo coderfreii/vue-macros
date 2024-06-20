@@ -48,20 +48,17 @@ export function transformJsxDirective(options: TransformOptions) {
 		node: import('typescript').Node,
 		parent?: import('typescript').Node,
 	) {
-
+		const tagName = getTagName(node, options);
 
 		if (ts.isImportDeclaration(node)) {
-			const tagName = getTagName(node, options);
-			console.log(tagName);
-			console.log('Imported module:',  getText(node.moduleSpecifier, options));
+			// console.log(tagName);
+			// console.log('Imported module:',  getText(node.moduleSpecifier, options));
 		}
 
-
-		const tagName = getTagName(node, options);
+		//TODO 只对赋值语句右侧的jsx生效
 		if ((tagName != null && tagName !== "") && (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node))) {
 			allJsxNodeSet.add(node);
 		}
-
 
 
 		const properties = getOpeningElement(node, options);
@@ -236,3 +233,4 @@ export function getTagName(
 
 	return getText(openingElement.tagName, options) + types;
 }
+
